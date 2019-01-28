@@ -1,0 +1,131 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Sub StockSummary()\
+\
+' Declare counter variable for stock-level summary\
+    Dim counter As Double\
+    counter = 0\
+\
+' Declare StartPrice for individual stocks:\
+    Dim StartPrice As Double\
+\
+' For loop to loop through sheets\
+    For Each ws In Worksheets\
+    \
+    ' Set text for column headers\
+        ws.Cells(1, 9) = "Ticker"\
+        ws.Cells(1, 10) = "Yearly Change"\
+        ws.Cells(1, 11) = "Pct Change"\
+        ws.Cells(1, 12) = "Total Stock Volume"\
+        \
+        ws.Cells(2, 15) = "Greatest % Increase"\
+        ws.Cells(3, 15) = "Greatest % Decrease"\
+        ws.Cells(4, 15) = "Greatest Total Volume"\
+        ws.Cells(1, 16) = "Ticker"\
+        ws.Cells(1, 17) = "Value"\
+        \
+    ' Format % for summary stats\
+        ws.Cells(2, 17).NumberFormat = "0.00%"\
+        ws.Cells(3, 17).NumberFormat = "0.00%"\
+    \
+    ' Reset Counter\
+        counter = 0\
+        \
+    ' For loop to loop through rows\
+        For i = 2 To ws.Cells(Rows.Count, 1).End(xlUp).Row\
+        \
+        ' Increase volume by cell value\
+            ws.Cells(counter + 2, 12) = ws.Cells(counter + 2, 12) + ws.Cells(i, 7)\
+        \
+        ' If previous stock is different, set start price\
+            If ws.Cells(i, 1).Value <> ws.Cells(i - 1, 1).Value Then\
+                StartPrice = ws.Cells(i, 3)\
+            End If\
+                \
+        ' If next stock is different:\
+            ' Add new stock ticker\
+            ' Set yearly change\
+            ' Conditonal formatting for yearly change\
+            ' Set % Change\
+            ' Format % change\
+            ' Check if stock is new max volume, max change, or min change & act accordingly\
+            ' Increment counter\
+            \
+            If ws.Cells(i, 1) <> ws.Cells(i + 1, 1) Then\
+            \
+                ' Set stock ticker\
+                    ws.Cells(counter + 2, 9) = ws.Cells(i, 1)\
+                \
+                ' Set Yearly Change\
+                    ws.Cells(counter + 2, 10) = ws.Cells(i, 6) - StartPrice\
+                    \
+                ' Conditional formatting for yearly change\
+                    If ws.Cells(counter + 2, 10) >= 0 Then\
+                        ws.Cells(counter + 2, 10).Interior.ColorIndex = 4\
+                    Else\
+                        ws.Cells(counter + 2, 10).Interior.ColorIndex = 3\
+                    End If\
+                \
+                ' Set % Change\
+                    If StartPrice <> 0 Then\
+                        ws.Cells(counter + 2, 11) = ws.Cells(counter + 2, 10) / StartPrice\
+                    Else\
+                        ws.Cells(counter + 2, 11) = 0\
+                    End If\
+                    \
+                ' Format % Change\
+                    ws.Cells(counter + 2, 11).NumberFormat = "0.00%"\
+                \
+                ' Check if stock is Max for Volume, % Change, or min % change\
+                \
+                    ' Check Max Change\
+                        If ws.Cells(counter + 2, 11) > ws.Cells(2, 17) Then\
+                        \
+                            ' Set Value\
+                                ws.Cells(2, 17) = ws.Cells(counter + 2, 11)\
+                            \
+                            ' Set Ticker\
+                                ws.Cells(2, 16) = ws.Cells(i, 1)\
+                        \
+                        End If\
+                        \
+                    ' Check Min Change\
+                        If ws.Cells(counter + 2, 11) < ws.Cells(3, 17) Then\
+                        \
+                            ' Set Value\
+                                ws.Cells(3, 17) = ws.Cells(counter + 2, 11)\
+                                \
+                            ' Set Ticker\
+                                ws.Cells(3, 16) = ws.Cells(i, 1)\
+                                \
+                        End If\
+                        \
+                    ' Check Volume\
+                        If ws.Cells(counter + 2, 12) > ws.Cells(4, 17) Then\
+                        \
+                            ' Set Value\
+                                ws.Cells(4, 17) = ws.Cells(counter + 2, 12)\
+                                \
+                            ' Set Ticker\
+                                ws.Cells(4, 16) = ws.Cells(i, 1)\
+                            \
+                        End If\
+                    \
+                ' Increment Counter\
+                    counter = counter + 1\
+                    \
+                End If\
+                \
+            Next i\
+    \
+    Next ws\
+\
+End Sub\
+\
+\
+}
